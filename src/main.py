@@ -63,11 +63,17 @@ def main() -> None:
     while True:
         try:
             current_track: dict = spotify.current_user_playing_track()
-            if current_track is None:
+            if current_track is None or current_track == "None":
                 change_status(music=False)
                 continue
+            
             if current_track['is_playing'] is False:
                 change_status(music=False)
+                continue
+
+            if current_track['item'] is None:
+                change_status(music=False)
+                continue
 
             else:
                 artist = current_track['item']['artists'][0]['name']
@@ -80,7 +86,7 @@ def main() -> None:
         except Exception as err:
             spotify = spotipy.Spotify(auth=get_token())
             print(color.WARNING + "[INFO] Reset Token" + color.ENDC)
-            print(err)
+            print(current_track)
             continue
 
 if __name__ == "__main__":
